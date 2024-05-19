@@ -1,0 +1,45 @@
+﻿<Page x:Class="CountTime.HomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CountTime"
+      mc:Ignorable="d" 
+      d:DesignHeight="405" d:DesignWidth="655"
+      Title="HomePage" Background="Transparent">
+
+    <Grid Margin="0,0,-77,-139">
+        <Label 
+            Content="Edit Outcount" 
+            FontWeight="DemiBold"
+            Style="{DynamicResource CaptureIt}"
+            FontSize="50"
+            Foreground="WhiteSmoke"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"/>
+        <Button
+            x:Name="SearchBtn"
+            Content="Search Movie"
+            HorizontalAlignment="Left"
+            Margin="572,504,0,0" 
+            VerticalAlignment="Top"
+            Width="150"
+            Height="30"
+            Foreground="WhiteSmoke"
+            Background="#13242C"
+            Style="{DynamicResource CaptureIt}"
+            Click="SearchBtn_Click"/>
+        <Button
+            x:Name="addBtn"
+            Content="Add Movie"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top"
+            Margin="417,504,0,0"
+            Width="150"
+            Height="30"
+            Foreground="WhiteSmoke"
+            Background="#13242C"
+            Style="{DynamicResource CaptureIt}"
+            Click="addBtn_Click"/>
+    </Grid>
+</Page>

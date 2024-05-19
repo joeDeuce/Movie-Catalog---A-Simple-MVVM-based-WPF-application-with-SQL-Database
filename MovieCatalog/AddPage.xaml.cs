@@ -1,21 +1,21 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace MovieCatalog
+namespace CountTime
 {
     /// <summary>
     /// Interaction logic for Add.xaml
     /// </summary>
     public partial class AddPage : Page
     {
-        MovieViewModel MovieVM;
+        CountTimeViewModel MovieVM;
         Frame Frame;
         public AddPage()
         {
             InitializeComponent();
         }
 
-        public AddPage(Frame frame1, MovieViewModel movieVM)
+        public AddPage(Frame frame1, CountTimeViewModel movieVM)
         {
             InitializeComponent();
             this.Frame = frame1;
@@ -68,13 +68,13 @@ namespace MovieCatalog
          */
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            Movie movie = new Movie();
-            movie.Title = Title_TBox.Text;
-            movie.ReleaseYear = int.Parse(ReleaseYear_TBox.Text);
-            movie.Genre = Genre_TBox.Text;
-            movie.Duration = int.Parse(duration_TBox.Text);
+            CurrentRoster currentRoster = new CurrentRoster();
+            currentRoster.GDCNum = int.Parse(Title_TBox.Text);
+            currentRoster.LastName = ReleaseYear_TBox.Text;
+            currentRoster.FirstName = Genre_TBox.Text;
+            currentRoster.Dorm = int.Parse(duration_TBox.Text);
 
-            MovieVM.AddRecordToRepo(movie);
+            MovieVM.AddRecordToRepo(currentRoster);
         }
 
         /*

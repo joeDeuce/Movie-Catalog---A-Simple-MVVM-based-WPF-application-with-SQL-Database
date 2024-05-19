@@ -3,22 +3,22 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace MovieCatalog
+namespace CountTime
 {
     /// <summary>
     /// Interaction logic for Search.xaml
     /// </summary>
     public partial class Search : Page
     {
-        MovieViewModel MovieVM;
-        Frame Frame;
+        readonly CountTimeViewModel MovieVM;
+        readonly Frame Frame;
 
         public Search()
         {
             InitializeComponent();
         }
 
-        public Search(Frame frame, MovieViewModel movieVM)
+        public Search(Frame frame, CountTimeViewModel movieVM)
         {
             InitializeComponent();
             this.Frame = frame;
@@ -27,12 +27,14 @@ namespace MovieCatalog
             this.Loaded += SearchPage_Loaded;
             EditBtn.IsEnabled = false;
             DelBtn.IsEnabled = false;
+
+            Search_Click(this, null);
         }
 
         private void SearchPage_Loaded(object sender, RoutedEventArgs e)
         {
-            searchBox.Focusable = true;
-            Keyboard.Focus(searchBox);
+            SearchBox.Focusable = true;
+            Keyboard.Focus(SearchBox);
         }
 
         /*
@@ -40,17 +42,19 @@ namespace MovieCatalog
          */
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            if (searchBox.Text == "")
+            if (SearchBox.Text == "")
             {
                 WarningSearchLabel.Visibility = Visibility.Visible;
-                return;
+                //return;
             }
 
             WarningSearchLabel.Visibility = Visibility.Hidden;
-            gridTable.DataContext = MovieVM.searchRepo(searchBox.Text);
-            gridTable.Columns[0].Visibility = Visibility.Hidden;        // Hides the first column i.e. ID
+            ////gridTable.DataContext = MovieVM.getActive();
+            //gridTable.ItemsSource = MovieVM.getActive();
+            GridTable.ItemsSource = MovieVM.GetActive();
+            ////gridTable.Columns[0].Visibility = Visibility.Hidden;        // Hides the first column i.e. ID
 
-            if (gridTable.SelectedCells.Count == 0)         // Disanle the Edit and Delete Button if no row selected
+            if (GridTable.SelectedCells.Count == 0)         // Disanle the Edit and Delete Button if no row selected
             {
                 EditBtn.IsEnabled = false;
                 DelBtn.IsEnabled = false;
@@ -66,12 +70,12 @@ namespace MovieCatalog
          * Function: Event Handler for Search Box GotFocus
          * Removes text from Search Box
          */
-        private void searchBox_GotFocus(object sender, RoutedEventArgs e)
+        private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            searchBox.Text = "";
-            searchBox.FontStretch = FontStretches.Normal;
-            searchBox.FontStyle = FontStyles.Normal;
-            searchBox.Foreground = Brushes.Black;
+            SearchBox.Text = "";
+            SearchBox.FontStretch = FontStretches.Normal;
+            SearchBox.FontStyle = FontStyles.Normal;
+            SearchBox.Foreground = Brushes.Black;
         }
 
         /*
@@ -80,10 +84,10 @@ namespace MovieCatalog
          */
         private void DelBtn_Click(object sender, RoutedEventArgs e)
         {
-            Movie movie = (Movie) gridTable.SelectedItem;
-            MovieVM.DeleteRecordFromRepo(movie.Id);
-            gridTable.DataContext = MovieVM.searchRepo(searchBox.Text);     // Updating the DataTable
-            gridTable.Columns[0].Visibility = Visibility.Hidden;
+            CurrentRoster movie = (CurrentRoster) GridTable.SelectedItem;
+            MovieVM.DeleteRecordFromRepo(movie.GDCNum);
+            GridTable.DataContext = MovieVM.GetActive();     // Updating the DataTable
+            GridTable.Columns[0].Visibility = Visibility.Hidden;
         }
 
         /*
@@ -91,13 +95,13 @@ namespace MovieCatalog
          */
         private void EditBtn_Click(object sender, RoutedEventArgs e)
         {
-            Movie tempMovie = (Movie) gridTable.SelectedItem;
+            CurrentRoster tempMovie = (CurrentRoster) GridTable.SelectedItem;
             Frame.Navigate(new EditPage(Frame, MovieVM, tempMovie));
         }
 
-        private void gridTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void GridTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (gridTable.SelectedCells.Count == 0)
+            if (GridTable.SelectedCells.Count == 0)
             {
                 EditBtn.IsEnabled = false;
                 DelBtn.IsEnabled = false;
@@ -107,7 +111,7 @@ namespace MovieCatalog
             DelBtn.IsEnabled = true;
         }
 
-        private void backBtn_Click(object sender, RoutedEventArgs e)
+        private void BackBtn_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(new HomePage(Frame, MovieVM));
         }

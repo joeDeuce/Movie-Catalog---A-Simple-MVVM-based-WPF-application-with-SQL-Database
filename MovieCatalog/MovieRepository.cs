@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MovieCatalog
+namespace CountTime
 {
     public class MovieRepository
     {
-        public List<Movie> movieRepository { get; set; }
+        public List<CurrentRoster> movieRepository { get; set; }
         
         public MovieRepository()
         {
@@ -21,18 +21,18 @@ namespace MovieCatalog
          * with the help of stored procedure
          * Used to populate the Repository (Collection)
          */
-        public List<Movie> GetMovieRepo()
+        public List<CurrentRoster> GetMovieRepo()
         {
-            List<Movie> listOfMovies = new List<Movie>();
+            List<CurrentRoster> listOfMovies = new List<CurrentRoster>();
 
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.connString))
             {
                 if (conn == null)
                 {
-                    throw new Exception("Connection String is Null. Set the value of Connection String in MovieCatalog->Properties-?Settings.settings");
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
                 }
 
-                SqlCommand query = new SqlCommand("SELECT * from Movie", conn);
+                SqlCommand query = new SqlCommand("SELECT * from CurrentRoster", conn);
                 conn.Open();
                 SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(query);
                 DataTable dataTable = new DataTable();
@@ -40,11 +40,11 @@ namespace MovieCatalog
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    Movie m = new Movie();
-                    m.Id = (int)row["id"];
+                    CurrentRoster m = new CurrentRoster();
+                    m.GDCNum = (int)row["id"];
                     m.Title = row["Title"].ToString();
-                    m.ReleaseYear = (int)row["ReleaseYear"];
-                    m.Genre = row["Genre"].ToString();
+                    m.LastName = (int)row["ReleaseYear"];
+                    m.FirstName = row["Genre"].ToString();
                     m.Duration = (int)row["Duration"];
 
                     listOfMovies.Add(m);
@@ -58,14 +58,14 @@ namespace MovieCatalog
          * Function: Return records that matches the Search Query String
          * with the help of stored procedure
          */
-        public List<Movie> GetMovieRepoSearch(string searchQuery)
+        public List<CurrentRoster> GetMovieRepoSearch(string searchQuery)
         {
-            List<Movie> listOfMovies = new List<Movie>();
+            List<CurrentRoster> listOfMovies = new List<CurrentRoster>();
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.connString))
             {
                 if (conn == null)
                 {
-                    throw new Exception("Connection String is Null. Set the value of Connection String in MovieCatalog->Properties-?Settings.settings");
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
                 }
                 SqlCommand query = new SqlCommand("retRecords", conn);
                 conn.Open();
@@ -80,11 +80,45 @@ namespace MovieCatalog
 
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    Movie m = new Movie();
-                    m.Id = (int)row["id"];
+                    CurrentRoster m = new CurrentRoster();
+                    m.GDCNum = (int)row["id"];
                     m.Title = row["Title"].ToString();
-                    m.ReleaseYear = (int)row["ReleaseYear"];
-                    m.Genre = row["Genre"].ToString();
+                    m.LastName = (int)row["ReleaseYear"];
+                    m.FirstName = row["Genre"].ToString();
+                    m.Duration = (int)row["Duration"];
+                    listOfMovies.Add(m);
+                }
+                return listOfMovies;
+            }
+        }
+
+        public List<CurrentRoster> GetAllMovies()
+        {
+            List<CurrentRoster> listOfMovies = new List<CurrentRoster>();
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.connString))
+            {
+                if (conn == null)
+                {
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
+                }
+                SqlCommand query = new SqlCommand("retRecords", conn);
+                conn.Open();
+                query.CommandType = CommandType.StoredProcedure;
+                SqlParameter param = new SqlParameter("TitlePhrase", SqlDbType.VarChar);
+                param.Value = "*";
+                query.Parameters.Add(param);
+
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(query);
+                DataTable dataTable = new DataTable();
+                sqlDataAdapter.Fill(dataTable);
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    CurrentRoster m = new CurrentRoster();
+                    m.GDCNum = (int)row["id"];
+                    m.Title = row["Title"].ToString();
+                    m.LastName = (int)row["ReleaseYear"];
+                    m.FirstName = row["Genre"].ToString();
                     m.Duration = (int)row["Duration"];
                     listOfMovies.Add(m);
                 }
@@ -96,13 +130,13 @@ namespace MovieCatalog
          * Function: Add new record to the Database
          * with the help of stored procedure
          */
-        public void addNewRecord(Movie movieRecord)
+        public void addNewRecord(CurrentRoster movieRecord)
         {
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.connString))
             {
                 if (conn == null)
                 {
-                    throw new Exception("Connection String is Null. Set the value of Connection String in MovieCatalog->Properties-?Settings.settings");
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
                 }
                 else if (movieRecord == null)
                     throw new Exception("The passed argument 'movieRecord' is null");
@@ -116,8 +150,8 @@ namespace MovieCatalog
                 SqlParameter param4 = new SqlParameter("pDuration", SqlDbType.Int);
 
                 param1.Value = movieRecord.Title;
-                param2.Value = movieRecord.ReleaseYear;
-                param3.Value = movieRecord.Genre;
+                param2.Value = movieRecord.LastName;
+                param3.Value = movieRecord.FirstName;
                 param4.Value = movieRecord.Duration;
 
                 query.Parameters.Add(param1);
@@ -139,7 +173,7 @@ namespace MovieCatalog
             {
                 if (conn == null)
                 {
-                    throw new Exception("Connection String is Null. Set the value of Connection String in MovieCatalog->Properties-?Settings.settings");
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
                 }
 
                 SqlCommand query = new SqlCommand("deleteRecord", conn);
@@ -154,16 +188,16 @@ namespace MovieCatalog
         }
 
         /*
-         * Function: Updates the Movie Record with reference to supplied id
+         * Function: Updates the CurrentRoster Record with reference to supplied id
          * with the help of stored procedure
          */
-        public void UpdateRecord(Movie movieRecord)
+        public void UpdateRecord(CurrentRoster movieRecord)
         {
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.connString))
             {
                 if (conn == null)
                 {
-                    throw new Exception("Connection String is Null. Set the value of Connection String in MovieCatalog->Properties-?Settings.settings");
+                    throw new Exception("Connection String is Null. Set the value of Connection String in CountTime->Properties-?Settings.settings");
                 }
 
                 SqlCommand query = new SqlCommand("updateRecord", conn);
@@ -175,10 +209,10 @@ namespace MovieCatalog
                 SqlParameter param4 = new SqlParameter("pGenre", SqlDbType.VarChar);
                 SqlParameter param5 = new SqlParameter("pDuration", SqlDbType.Int);
 
-                param1.Value = movieRecord.Id;
+                param1.Value = movieRecord.GDCNum;
                 param2.Value = movieRecord.Title;
-                param3.Value = movieRecord.ReleaseYear;
-                param4.Value = movieRecord.Genre;
+                param3.Value = movieRecord.LastName;
+                param4.Value = movieRecord.FirstName;
                 param5.Value = movieRecord.Duration;
 
                 query.Parameters.Add(param1);

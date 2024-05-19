@@ -1,19 +1,19 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace MovieCatalog
+namespace CountTime
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MovieViewModel MovieVM { get; set; }
+        public CountTimeViewModel MovieVM { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            MovieVM = new MovieViewModel();
+            MovieVM = new CountTimeViewModel();
             Frame.Navigate(new HomePage(Frame,MovieVM));
         }
     }
